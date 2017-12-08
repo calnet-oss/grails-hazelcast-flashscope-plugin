@@ -12,8 +12,7 @@ dependencies {
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
 
-    compile group: 'com.hazelcast', name: 'hazelcast', version: hazelcastVersion
-    compile group: 'com.hazelcast', name: 'hazelcast-client', version: hazelcastVersion
+    compile group: 'com.hazelcast', name: 'hazelcast-all', version: hazelcastVersion
     compile group: 'com.hazelcast', name: 'hazelcast-tomcat-sessionmanager', version: '1.1.2', ext: 'pom'
     compile group: 'com.hazelcast', name: 'hazelcast-tomcat85-sessionmanager', version: '1.1.2'
     compile group: 'com.hazelcast', name: 'tomcat-core', version: '1.1.2'

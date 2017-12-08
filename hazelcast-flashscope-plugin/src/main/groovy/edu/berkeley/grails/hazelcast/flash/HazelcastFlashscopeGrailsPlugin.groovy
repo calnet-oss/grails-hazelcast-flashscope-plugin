@@ -57,7 +57,7 @@ class HazelcastFlashscopeGrailsPlugin extends Plugin {
 
     protected static class HazelcastFlashScopeGrailsPluginHelper {
         static Integer getHighestPrecedenceOffset(def config) {
-            def value = config.serializableSession?.filter?.highestPrecedenceOffset
+            def value = config.hazelcast?.flashscope?.filter?.highestPrecedenceOffset
             if (value instanceof Number) {
                 return value.intValue()
             } else if (value instanceof String) {
@@ -69,7 +69,11 @@ class HazelcastFlashscopeGrailsPlugin extends Plugin {
 
     Closure doWithSpring() {
         { ->
-            grailsHazelcastFlashScopeFilter(GrailsHazelcastFlashScopeFilter)
+            grailsHazelcastFlashScopeFilter(GrailsHazelcastFlashScopeFilter) {
+                if (config.hazelcast?.flashscope?.filter?.mapName) {
+                    mapName = config.hazelcast.flashscope.filter.mapName
+                }
+            }
 
             grailsHazelcastFlashScopeFilterRegistrationBean(FilterRegistrationBean) {
                 def highestPrecedenceOffset = HazelcastFlashScopeGrailsPluginHelper.getHighestPrecedenceOffset(config)
@@ -77,6 +81,14 @@ class HazelcastFlashscopeGrailsPlugin extends Plugin {
                 filter = ref("grailsHazelcastFlashScopeFilter")
                 order = Ordered.HIGHEST_PRECEDENCE + (highestPrecedenceOffset != null ? highestPrecedenceOffset : DEFAULT_HIGHEST_PRECEDENCE_OFFSET)
             }
+
+            hazelcastClientFactory(HazelcastClientFactory) {
+                if (config.hazelcast?.flashscope?.clientConfigLocation) {
+                    configFileLocation = config.hazelcast.flashscope.clientConfigLocation
+                }
+            }
+
+            hazelcastClient(hazelcastClientFactory: "newHazelcastClientInstance")
         }
     }
 

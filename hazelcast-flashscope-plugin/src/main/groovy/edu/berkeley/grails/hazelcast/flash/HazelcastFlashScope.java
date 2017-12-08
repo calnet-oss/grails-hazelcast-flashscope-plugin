@@ -20,8 +20,8 @@
  */
 package edu.berkeley.grails.hazelcast.flash;
 
-import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.core.HazelcastInstance;
+import grails.util.Holders;
 import grails.web.mvc.FlashScope;
 import groovy.lang.GroovySystem;
 import groovy.lang.MetaClass;
@@ -63,7 +63,10 @@ public class HazelcastFlashScope implements FlashScope, Serializable {
 
     protected HazelcastInstance getHazelcastInstance() {
         if (hazelcastInstance == null) {
-            this.hazelcastInstance = HazelcastClient.newHazelcastClient();
+            this.hazelcastInstance = (HazelcastInstance) Holders.getGrailsApplication().getMainContext().getBean("hazelcastClient");
+            if (hazelcastInstance == null) {
+                throw new RuntimeException("Could not find 'hazelcastClient' bean");
+            }
         }
         return hazelcastInstance;
     }
@@ -305,7 +308,7 @@ public class HazelcastFlashScope implements FlashScope, Serializable {
     }
 
     /**
-     * Make a session dirty so that Hazelcast will persist changes. 
+     * Make a session dirty so that Hazelcast will persist changes.
      * Necessary because modifying the flash scope submap won't otherwise be
      * detected as a change to the session.
      *

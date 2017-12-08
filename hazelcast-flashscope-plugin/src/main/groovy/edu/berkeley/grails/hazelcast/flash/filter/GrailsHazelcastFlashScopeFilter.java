@@ -29,9 +29,9 @@ package edu.berkeley.grails.hazelcast.flash.filter;
 import edu.berkeley.grails.hazelcast.flash.HazelcastFlashScope;
 import grails.core.GrailsApplication;
 import grails.core.support.GrailsApplicationAware;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.grails.web.util.GrailsApplicationAttributes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -48,16 +48,16 @@ import java.io.Serializable;
  * A filter that must execute before the {@link
  * org.grails.web.servlet.mvc.GrailsWebRequestFilter} and before anything
  * calls {@link
- * org.grails.web.servlet.DefaultGrailsApplicationAttributes#getFlashScope}. 
+ * org.grails.web.servlet.DefaultGrailsApplicationAttributes#getFlashScope}.
  * This filter will set a serializable flash scope object in the session
  * before Grails has a chance to instantiate an unserializable flash scope
  * object in {@link
- * org.grails.web.servlet.DefaultGrailsApplicationAttributes#getFlashScope}. 
+ * org.grails.web.servlet.DefaultGrailsApplicationAttributes#getFlashScope}.
  * Grails won't set its own flash scope object if it's already been set, so
  * we take advantage of that fact by creating our own serializable flash
- * scope early in the filter chain.  
- *
- * <p> This filter will warn if a nonserializable flash scope has been set
+ * scope early in the filter chain.
+ * <p>
+ * This filter will warn if a nonserializable flash scope has been set
  * before this filter is executed, indicating this filter isn't running
  * early enough in the filter chain.  See {@link
  * edu.berkeley.grails.hazelcast.flash.HazelcastFlashscopeGrailsPlugin#doWithSpring}
@@ -65,12 +65,22 @@ import java.io.Serializable;
  */
 public class GrailsHazelcastFlashScopeFilter implements Filter, GrailsApplicationAware {
 
-    protected static Logger log = LoggerFactory.getLogger(GrailsHazelcastFlashScopeFilter.class);
+    protected static Log log = LogFactory.getLog(GrailsHazelcastFlashScopeFilter.class);
     private GrailsApplication grailsApplication;
+
+    private String mapName;
 
     @Override
     public void setGrailsApplication(GrailsApplication grailsApplication) {
         this.grailsApplication = grailsApplication;
+    }
+
+    public String getMapName() {
+        return mapName;
+    }
+
+    public void setMapName(String mapName) {
+        this.mapName = mapName;
     }
 
     @Override
@@ -90,13 +100,14 @@ public class GrailsHazelcastFlashScopeFilter implements Filter, GrailsApplicatio
             }
         } else {
             if (session != null) {
-                // TODO: The mapName can be configured in HazelcastSessionManager
                 String contextPath = request.getServletContext().getContextPath();
-                String mapName;
-                if (contextPath == null || contextPath.equals("/") || contextPath.equals("")) {
-                    mapName = "empty_session_replication";
-                } else {
-                    mapName = contextPath.substring(1, contextPath.length()) + "_session_replication";
+                String mapName = getMapName();
+                if (mapName == null) {
+                    if (contextPath == null || contextPath.equals("/") || contextPath.equals("")) {
+                        mapName = "empty_session_replication";
+                    } else {
+                        mapName = contextPath.substring(1, contextPath.length()) + "_session_replication";
+                    }
                 }
                 log.info("Setting serializable flash scope in the session using mapName " + mapName);
 
