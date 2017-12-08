@@ -96,7 +96,7 @@ public class GrailsHazelcastFlashScopeFilter implements Filter, GrailsApplicatio
             if (!(existingFlashScope instanceof Serializable)) {
                 log.warn(GrailsApplicationAttributes.FLASH_SCOPE + " has already been set and it's not serializable!  This is an indication this GrailsSerializableSessionFilter is not running early enough in the filter chain.");
             } else {
-                log.warn("There's an existing serializable flash scope of type " + existingFlashScope.getClass().getName());
+                log.debug("There's an existing serializable flash scope of type " + existingFlashScope.getClass().getName());
             }
         } else {
             if (session != null) {
@@ -109,7 +109,7 @@ public class GrailsHazelcastFlashScopeFilter implements Filter, GrailsApplicatio
                         mapName = contextPath.substring(1, contextPath.length()) + "_session_replication";
                     }
                 }
-                log.info("Setting serializable flash scope in the session using mapName " + mapName);
+                log.debug("Setting serializable flash scope in the session using mapName " + mapName);
 
                 session.setAttribute(GrailsApplicationAttributes.FLASH_SCOPE, new HazelcastFlashScope(mapName, session));
 
