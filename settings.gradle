@@ -1,0 +1,3 @@
+rootProject.name='hazelcast-flashscope'
+
+include 'hazelcast-flashscope-plugin', 'hazelcast-flashscope-test'

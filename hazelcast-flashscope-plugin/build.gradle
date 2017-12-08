@@ -1,0 +1,57 @@
+apply plugin: "org.grails.grails-plugin"
+apply plugin: 'maven-publish'
+
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
+
+dependencies {
+    compileOnly "javax.servlet:javax.servlet-api"
+    compileOnly "org.springframework.boot:spring-boot-starter-logging"
+    compileOnly "org.springframework.boot:spring-boot-autoconfigure"
+    compileOnly "org.grails:grails-core"
+    compileOnly "org.grails:grails-dependencies"
+    compileOnly "org.grails:grails-web-boot"
+    profile "org.grails.profiles:web-plugin"
+    compileOnly "org.grails:grails-plugin-services"
+    compileOnly "org.grails:grails-plugin-domain-class"
+    testCompile "org.grails:grails-plugin-testing"
+
+    compileOnly group: 'com.hazelcast', name: 'hazelcast-client', version: hazelcastVersion
+}
+
+bootRun {
+    jvmArgs('-Dspring.output.ansi.enabled=always')
+    addResources = true
+}
+// enable if you wish to package this plugin as a standalone application
+bootRepackage.enabled = false
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allGroovy
+}
+
+// publishing with './gradlew publish'
+publish.dependsOn assemble
+publishToMavenLocal.dependsOn assemble
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId rootProject.name
+            from components.java
+            artifact sourceJar { classifier "sources" }
+        }
+    }
+
+    repositories {
+        maven {
+            // Put the property settings in ~/.gradle/gradle.properties for
+            // default_deploy_url, default_deploy_grails_plugin_repo
+            // default_deploy_username and default_deploy_password.
+            url "${project.property('default_deploy_url')}/${default_deploy_grails_plugin_repo}"
+            credentials {
+                username project.property("default_deploy_user")
+                password project.property("default_deploy_password")
+            }
+        }
+    }
+}
