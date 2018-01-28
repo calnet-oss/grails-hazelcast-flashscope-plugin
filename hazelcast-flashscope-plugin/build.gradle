@@ -25,6 +25,8 @@ bootRun {
 }
 // enable if you wish to package this plugin as a standalone application
 bootRepackage.enabled = false
+// bug workaround
+springBoot.mainClass=""
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allGroovy
