@@ -58,11 +58,11 @@ buildscript {
     }
 }
 
+version projectVersion
+group projectGroup
+
 allprojects {
     apply plugin: 'idea'
-
-    version projectVersion
-    group projectGroup
 
     repositories {
         mavenLocal()
