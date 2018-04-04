@@ -2,7 +2,7 @@ package edu.berkeley.grails.hazelcast.flash.test
 
 import edu.berkeley.grails.hazelcast.flash.HazelcastFlashScope
 import geb.spock.GebSpec
-import grails.test.mixin.integration.Integration
+import grails.testing.mixin.integration.Integration
 import groovy.json.JsonSlurper
 import org.apache.commons.codec.binary.Base64
 
