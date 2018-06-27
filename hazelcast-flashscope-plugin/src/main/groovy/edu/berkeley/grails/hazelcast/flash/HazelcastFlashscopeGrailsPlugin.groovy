@@ -33,7 +33,7 @@ import org.springframework.core.Ordered
 
 class HazelcastFlashscopeGrailsPlugin extends Plugin {
 
-    def grailsVersion = "3.2.11 > *"
+    def grailsVersion = "3.3.6 > *"
 
     def title = "Grails Hazelcast Flash Scope Plugin"
     def author = "Brian Koehmstedt"
