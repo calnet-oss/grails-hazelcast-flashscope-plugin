@@ -54,6 +54,7 @@ allprojects {
                 }
             }
         }
+        maven { url "https://repo.grails.org/grails/core" }
         jcenter()
         mavenCentral()
     }

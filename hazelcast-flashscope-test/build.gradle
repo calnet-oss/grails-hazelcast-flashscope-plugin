@@ -34,7 +34,8 @@ dependencies {
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
     profile "org.grails.profiles:web"
-    testCompile "org.grails:grails-plugin-testing"
+    testCompile "org.grails:grails-gorm-testing-support"
+    testCompile "org.grails:grails-web-testing-support"
     testCompile "org.grails.plugins:geb"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
 
@@ -49,4 +50,6 @@ dependencies {
 bootRun {
     jvmArgs('-Dspring.output.ansi.enabled=always')
     addResources = true
+    String springProfilesActive = 'spring.profiles.active'
+    systemProperty springProfilesActive, System.getProperty(springProfilesActive)
 }
